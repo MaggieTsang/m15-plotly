@@ -2,6 +2,7 @@
 title: "index"
 output: html_document
 ---
+<<<<<<< HEAD
 aserfaerferferfse
 
 ```{r}
@@ -62,6 +63,9 @@ merged.data <- left_join(committee.summary.df, rep.df, by = "results.bioguide_id
 
 
 <!--
+=======
+
+>>>>>>> 37887c75037db440c11f944a703ec77920849724
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
@@ -85,4 +89,7 @@ plot(pressure)
 ```
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+<<<<<<< HEAD
 -->
+=======
+>>>>>>> 37887c75037db440c11f944a703ec77920849724
