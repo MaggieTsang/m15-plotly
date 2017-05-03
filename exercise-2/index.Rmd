@@ -2,7 +2,66 @@
 title: "index"
 output: html_document
 ---
+aserfaerferferfse
 
+```{r}
+library(jsonlite)
+library(dplyr)
+library(knitr)
+#library(httr) manages spaces
+
+base.url <- "https://congress.api.sunlightfoundation.com"
+uw.zip <- "98105"
+
+# Find and Report Your District
+district <- "/districts/locate?zip="
+zip.data <- fromJSON(paste(base.url, district, uw.zip, sep = ""))
+zip.df <- as.data.frame(zip.data)
+sentence <- paste("For zip code ", uw.zip, ", the congressional district is ", zip.df$results.district, sep = "")
+
+# Representatives Table
+legislators <- "/legislators/locate?zip=98105"
+rep.data <- fromJSON(paste(base.url, legislators, sep = ""))
+rep.df <- as.data.frame(rep.data)
+# Create web link column
+rep.df$web_link <- paste("[link](", rep.df$results.website, ")", sep = "")
+# Create Twitter link column
+rep.df$twitter_link <- paste("[link](https://twitter.com/", rep.df$results.twitter_id, ")", sep = "")
+rep.condense <- rep.df %>% select(results.first_name, results.last_name, results.title, results.party, results.chamber, results.phone, web_link, twitter_link)
+new.col.names <- c("First Name", "Last Name", "Title", "Party", "Chamber", "Phone", "Website", "Twitter")
+kable(rep.condense, col.names = new.col.names)
+
+
+
+
+# Summary Committee Information
+RepServedCommittees <- function(rep.id) {
+  committee.endpoint <- paste(base.url, "/committees?member_ids=", rep.id, sep = "")
+  committee.info.df <- as.data.frame(fromJSON(committee.endpoint))
+  committee.info.df$results.bioguide_id <- rep.id
+  return(committee.info.df)
+}
+
+committee.summary.df <- bind_rows(lapply(rep.df$results.bioguide_id, RepServedCommittees))
+merged.data <- left_join(committee.summary.df, rep.df, by = "results.bioguide_id")
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
@@ -26,3 +85,4 @@ plot(pressure)
 ```
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+-->
